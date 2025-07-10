@@ -3,13 +3,15 @@ package io.iskopasi.somedemo.viewmodel
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Player
-import io.iskopasi.somedemo.R
 import io.iskopasi.somedemo.SampleDataHolder
 import io.iskopasi.somedemo.managers.DataSource
 import io.iskopasi.somedemo.managers.PlayerManager
+import io.iskopasi.somedemo.unknownSampleData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailsModel(
     application: Application,
@@ -17,13 +19,7 @@ class DetailsModel(
     private val playerManager: PlayerManager,
 ) : BaseModel(application = application) {
     private val _item = MutableStateFlow(
-        SampleDataHolder(
-            imageRes = R.drawable.shaders,
-            name = "",
-            description = "",
-            link = "",
-            videoLinks = emptyList()
-        )
+        unknownSampleData
     )
     private val _players = MutableStateFlow<List<Player>>(emptyList())
 
@@ -35,14 +31,13 @@ class DetailsModel(
             val data = dataSource.getData(id).toSampleDataHolder()
             _item.value = data
 
-            _players.value = data.videoLinks.toPlayerList()
+            withContext(Dispatchers.Main) {
+                _players.value = data.videoLinks.toPlayerList()
+            }
         }
     }
 
     private fun List<String>.toPlayerList() = this.map { it.toPlayer() }
 
-    private fun String.toPlayer(): Player {
-        val application = getApplication<Application>()
-        return playerManager.getPlayer(this)
-    }
+    private fun String.toPlayer(): Player = playerManager.getPlayer(this)
 }

@@ -100,7 +100,8 @@ private fun DetailsContent(
                 .padding(8.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            maxItemsInEachRow = 3
+            maxItemsInEachRow = 3,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             players.forEach { player ->
                 VideoItem(player = player)
@@ -178,8 +179,8 @@ private fun VideoItem(modifier: Modifier = Modifier, player: Player) {
             player = player,
             surfaceType = SURFACE_TYPE_SURFACE_VIEW,
             modifier = Modifier
-                .height(200.dp)
-                .width(150.dp),
+                .height(210.dp)
+                .width(130.dp),
         )
 
         if (presentationState.coverSurface) {

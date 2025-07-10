@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.FinalizeBundleTask
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,11 +20,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        setProperty("archivesBaseName", "sampledemo_${versionName}_($versionCode)")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -39,6 +43,53 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("dev-sub") {
+            dimension = "version"
+            buildConfigField("boolean", "isDevVersion", "true")
+            buildConfigField("boolean", "isSubscribed", "true")
+            versionNameSuffix = "-dev-sub"
+        }
+        create("dev-not-sub") {
+            dimension = "version"
+            buildConfigField("boolean", "isDevVersion", "true")
+            buildConfigField("boolean", "isSubscribed", "false")
+            versionNameSuffix = "-dev-not-sub"
+        }
+        create("prod") {
+            dimension = "version"
+            buildConfigField("boolean", "isDevVersion", "false")
+            buildConfigField("boolean", "isSubscribed", "false")
+            versionNameSuffix = "-prod"
+        }
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            // AAB file name that You want. Flavor name also can be accessed here.
+            val aabPackageName = "sampledemo_$(versionName)_($versionCode).aab"
+            // Get final bundle task name for this variant
+            val bundleFinalizeTaskName = StringBuilder("sign").run {
+                // Add each flavor dimension for this variant here
+                productFlavors.forEach {
+                    append(it.name.replaceFirstChar { it.uppercase() })
+                }
+                // Add build type of this variant
+                append(buildType.name.replaceFirstChar { it.uppercase() })
+                append("Bundle")
+                toString()
+            }
+            tasks.named(bundleFinalizeTaskName, FinalizeBundleTask::class.java) {
+                val file = finalBundleFile.asFile.get()
+                val finalFile = File(file.parentFile, aabPackageName)
+                finalBundleFile.set(finalFile)
+            }
+        }
     }
 }
 

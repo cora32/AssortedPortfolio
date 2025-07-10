@@ -29,8 +29,8 @@ data class SomeSampleResponse(
 
 
 class DataSource(
-    val dao: SampleDao,
-    val restApi: RestApi,
+    private val dao: SampleDao,
+    private val restApi: RestApi,
 ) {
     val dataFlow: Flow<List<SampleEntity>> = dao.getFlow()
 
@@ -46,9 +46,13 @@ class DataSource(
                 sampleDataMap[path]?.toSampleEntity()
             }
 
-            dao.upsert(resultList)
+            if (resultList.isEmpty())
+                return false
+            else {
+                dao.upsert(resultList)
 
-            return true
+                return true
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -57,6 +61,8 @@ class DataSource(
     }
 
     suspend fun getData(id: Int) = dao.getById(id)
+
+    suspend fun getAll() = dao.getAll()
 }
 
 private fun SampleDataHolder?.toSampleEntity() = SampleEntity(

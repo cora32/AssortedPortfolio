@@ -23,15 +23,21 @@ class MainModel(
     application: Application,
     private val repo: DataSource,
 ) : BaseModel(application = application) {
-    private val _data = repo.dataFlow.map { list -> list.map { it.toSampleDataHolder() } }
-        .stateIn(scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(0),
-            initialValue = emptyList()
-        )
+    private val _data =
+        repo.dataFlow.map { list -> list.map { it.toSampleDataHolder() } }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(0),
+                initialValue = emptyList()
+            )
     private val _state = MutableStateFlow(LoadingState.Idle)
 
     val data: StateFlow<List<SampleDataHolder>> = _data
     val state: StateFlow<LoadingState> = _state
+
+    init {
+        if (_data.value.isNotEmpty()) _state.value = LoadingState.Success
+    }
 
     fun getData() {
         viewModelScope.launch(ioDispatcher) {

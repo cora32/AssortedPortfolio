@@ -75,22 +75,35 @@ fun MainScreen(
                     onClick = model::onItemSelected
                 )
 
-                LoadingState.Error -> SomeErrorBox()
+                LoadingState.Error -> SomeErrorBox(onFetchData = model::getData)
             }
         }
     }
 }
 
 @Composable
-fun SomeErrorBox(modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+fun SomeErrorBox(modifier: Modifier = Modifier, onFetchData: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 24.dp, end = 24.dp, bottom = 64.dp)
     ) {
-        Text(
-            stringResource(R.string.error_occurred),
-            style = Typography.bodySmall,
-            color = Color.Red
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                stringResource(R.string.error_occurred),
+                style = Typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+        }
+        SDButton(
+            text = stringResource(R.string.get_data),
+            onClick = onFetchData,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -127,7 +140,7 @@ private fun PressButtonBox(modifier: Modifier = Modifier, onFetchData: () -> Uni
         ) {
             Text(
                 text = stringResource(R.string.no_data),
-                style = Typography.bodySmall,
+                style = Typography.bodySmall.copy(color = Color.Black),
                 textAlign = TextAlign.Center
             )
         }

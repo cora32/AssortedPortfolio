@@ -12,7 +12,7 @@ interface SampleDao {
     fun getFlow(): Flow<List<SampleEntity>>
 
     @Query("SELECT * FROM sampleentity")
-    fun getAll(): List<SampleEntity>
+    suspend fun getAll(): List<SampleEntity>
 
     @Query("SELECT * FROM sampleentity WHERE uid = :uid")
     suspend fun getById(uid: Int): SampleEntity

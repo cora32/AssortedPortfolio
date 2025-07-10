@@ -22,7 +22,6 @@ fun FullScreen(
     link: String
 ) {
     val player by model.player.collectAsStateWithLifecycle()
-    val item by model.item.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         model.prepareData(link = link)
@@ -35,7 +34,6 @@ fun FullScreen(
         topBar = {
             TopBar(
                 onBack = model::onBack,
-                title = item.name,
             )
         },
     ) { innerPadding ->

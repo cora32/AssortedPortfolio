@@ -8,6 +8,7 @@ import io.iskopasi.somedemo.managers.RestApi
 import io.iskopasi.somedemo.managers.room.AppDatabase
 import io.iskopasi.somedemo.managers.room.SampleDao
 import io.iskopasi.somedemo.viewmodel.DetailsModel
+import io.iskopasi.somedemo.viewmodel.FullScreenModel
 import io.iskopasi.somedemo.viewmodel.MainModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
@@ -80,6 +81,12 @@ val vmModule = module {
         DetailsModel(
             application = androidApplication(),
             dataSource = get(),
+            playerManager = get()
+        )
+    }
+    viewModel {
+        FullScreenModel(
+            application = androidApplication(),
             playerManager = get()
         )
     }

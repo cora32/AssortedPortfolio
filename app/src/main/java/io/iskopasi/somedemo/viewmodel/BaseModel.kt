@@ -11,7 +11,11 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
-open class BaseModel(application: Application): AndroidViewModel(application = application), KoinComponent {
+open class BaseModel(
+    application: Application,
+) :
+    AndroidViewModel(application = application),
+    KoinComponent {
     protected val navManager: NavManager by inject()
     protected val ioDispatcher: CoroutineDispatcher = get(named(IODispatcher))
     protected val defaultDispatcher: CoroutineDispatcher = get(named(DefaultDispatcher))

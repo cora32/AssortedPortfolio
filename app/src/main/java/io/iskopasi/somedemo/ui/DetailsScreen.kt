@@ -1,6 +1,7 @@
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package io.iskopasi.somedemo.ui
 
-import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,11 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,27 +33,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.compose.PlayerSurface
-import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
-import androidx.media3.ui.compose.state.rememberPresentationState
 import io.iskopasi.somedemo.SampleDataHolder
 import io.iskopasi.somedemo.ui.theme.Typography
 import io.iskopasi.somedemo.ui.theme.colorBg
 import io.iskopasi.somedemo.viewmodel.DetailsModel
+import io.iskopasi.somedemo.viewmodel.PlayerHolder
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DetailsScreen(
     modifier: Modifier = Modifier,
     model: DetailsModel = koinViewModel(),
-    id: Int
+    id: Int,
 ) {
     val players by model.players.collectAsStateWithLifecycle()
     val item by model.item.collectAsStateWithLifecycle()
 
-    LaunchedEffect(id) {
+    LaunchedEffect(Unit) {
         model.prepareData(id = id)
     }
 
@@ -70,7 +67,8 @@ fun DetailsScreen(
         DetailsContent(
             modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             item = item,
-            players = players
+            players = players,
+            onClick = model::onVideoClick
         )
     }
 }
@@ -79,7 +77,8 @@ fun DetailsScreen(
 private fun DetailsContent(
     modifier: Modifier = Modifier,
     item: SampleDataHolder,
-    players: List<Player>
+    players: List<PlayerHolder>,
+    onClick: (String) -> Unit
 ) {
     val imageRes = item.imageRes
     val title = item.name
@@ -103,8 +102,14 @@ private fun DetailsContent(
             maxItemsInEachRow = 3,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            players.forEach { player ->
-                VideoItem(player = player)
+            players.forEach { playerHolder ->
+                VideoBox(
+                    player = playerHolder.player, modifier = Modifier
+                        .height(210.dp)
+                        .width(130.dp),
+                    onClick = {
+                        onClick(playerHolder.link)
+                    })
             }
         }
     }
@@ -159,33 +164,6 @@ fun Header(
                     uriHandler.openUri(link)
                 }
             )
-        }
-    }
-}
-
-@OptIn(UnstableApi::class)
-@Composable
-private fun VideoItem(modifier: Modifier = Modifier, player: Player) {
-    DisposableEffect(Unit) {
-        onDispose {
-            player.release()
-        }
-    }
-
-    val presentationState = rememberPresentationState(player)
-
-    Box(modifier) {
-        PlayerSurface(
-            player = player,
-            surfaceType = SURFACE_TYPE_SURFACE_VIEW,
-            modifier = Modifier
-                .height(210.dp)
-                .width(130.dp),
-        )
-
-        if (presentationState.coverSurface) {
-            // Cover the surface that is being prepared with a shutter
-            Box(Modifier.background(Color.Black))
         }
     }
 }

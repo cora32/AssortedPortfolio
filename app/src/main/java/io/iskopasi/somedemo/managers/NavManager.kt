@@ -11,6 +11,10 @@ data object RouteMain : NavKey
 @Serializable
 data class RouteDetails(val id: Int) : NavKey
 
+@Serializable
+data class RouteFullScreen(val link: String) : NavKey
+
+
 class NavManager {
     val backStack = mutableStateListOf<NavKey>(RouteMain)
 
@@ -21,5 +25,9 @@ class NavManager {
 
     fun toDetails(id: Int) {
         backStack.add(RouteDetails(id = id))
+    }
+
+    fun toFullScreen(link: String) {
+        backStack.add(RouteFullScreen(link = link))
     }
 }

@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+data class PlayerHolder(val link: String, val player: Player)
+
 class DetailsModel(
     application: Application,
     private val dataSource: DataSource,
@@ -21,9 +23,9 @@ class DetailsModel(
     private val _item = MutableStateFlow(
         unknownSampleData
     )
-    private val _players = MutableStateFlow<List<Player>>(emptyList())
+    private val _players = MutableStateFlow<List<PlayerHolder>>(emptyList())
 
-    val players: StateFlow<List<Player>> = _players
+    val players: StateFlow<List<PlayerHolder>> = _players
     val item: StateFlow<SampleDataHolder> = _item
 
     fun prepareData(id: Int) {
@@ -32,12 +34,19 @@ class DetailsModel(
             _item.value = data
 
             withContext(Dispatchers.Main) {
-                _players.value = data.videoLinks.toPlayerList()
+                _players.value = data.videoLinks.toPlayerHolderList()
             }
         }
     }
 
-    private fun List<String>.toPlayerList() = this.map { it.toPlayer() }
+    fun onVideoClick(link: String) {
+        navManager.toFullScreen(link = link)
+    }
 
-    private fun String.toPlayer(): Player = playerManager.getPlayer(this)
+    private fun List<String>.toPlayerHolderList() = this.map {
+        PlayerHolder(
+            link = it,
+            player = playerManager.getPlayer(it)
+        )
+    }
 }

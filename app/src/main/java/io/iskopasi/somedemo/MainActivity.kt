@@ -13,8 +13,10 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import io.iskopasi.somedemo.managers.NavManager
 import io.iskopasi.somedemo.managers.RouteDetails
+import io.iskopasi.somedemo.managers.RouteFullScreen
 import io.iskopasi.somedemo.managers.RouteMain
 import io.iskopasi.somedemo.ui.DetailsScreen
+import io.iskopasi.somedemo.ui.FullScreen
 import io.iskopasi.somedemo.ui.MainScreen
 import io.iskopasi.somedemo.ui.theme.SomeDemoTheme
 import org.koin.android.ext.android.inject
@@ -69,6 +71,10 @@ class MainActivity : ComponentActivity() {
 
                             is RouteDetails -> NavEntry(key) {
                                 DetailsScreen(id = key.id)
+                            }
+
+                            is RouteFullScreen -> NavEntry(key) {
+                                FullScreen(link = key.link)
                             }
 
                             else -> {

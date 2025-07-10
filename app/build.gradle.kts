@@ -97,4 +97,10 @@ dependencies {
     // You'll also need the core lifecycle runtime for ViewModels
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // ExoPlayer
+    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
 }

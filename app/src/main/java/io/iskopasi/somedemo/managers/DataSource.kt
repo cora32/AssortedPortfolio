@@ -3,16 +3,11 @@ package io.iskopasi.somedemo.managers
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import io.iskopasi.somedemo.SampleDataHolder
-import io.iskopasi.somedemo.e
 import io.iskopasi.somedemo.managers.room.SampleDao
 import io.iskopasi.somedemo.managers.room.SampleEntity
 import io.iskopasi.somedemo.sampleDataMap
 import io.iskopasi.somedemo.unknownSampleData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,7 +16,8 @@ import kotlinx.serialization.Serializable
 data class SomeSampleRequest(
     @SerializedName("path")
     @SerialName("path")
-    val path: String)
+    val path: String
+)
 
 @Keep
 @Serializable
@@ -36,16 +32,18 @@ class DataSource(
     val dao: SampleDao,
     val restApi: RestApi,
 ) {
-    val dataFlow: Flow<List<SampleEntity>> = dao.getAll()
+    val dataFlow: Flow<List<SampleEntity>> = dao.getFlow()
 
     suspend fun fetchData(): Boolean {
         try {
             val resultList = sampleDataMap.keys.mapNotNull { path ->
+                // Let's pretend the reply is parsed here
                 restApi.getData<SomeSampleResponse>(path)
                     .takeIf { it.code == 200 }
                     ?.data
-                    ?.parseData()
-                    ?.toSampleEntity()
+                //------------------
+
+                sampleDataMap[path]?.toSampleEntity()
             }
 
             dao.upsert(resultList)
@@ -57,6 +55,8 @@ class DataSource(
 
         return false
     }
+
+    suspend fun getData(id: Int) = dao.getById(id)
 }
 
 private fun SampleDataHolder?.toSampleEntity() = SampleEntity(
@@ -68,6 +68,5 @@ private fun SampleDataHolder?.toSampleEntity() = SampleEntity(
 )
 
 private fun SomeSampleResponse.parseData(): SampleDataHolder {
-    // Let's pretend the reply is parsed here
     return sampleDataMap[this.data] ?: unknownSampleData
 }

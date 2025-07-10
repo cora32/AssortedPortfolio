@@ -1,14 +1,16 @@
 package io.iskopasi.somedemo
 
-data class SampleDataHolder (
+data class SampleDataHolder(
+    val uid: Int = 0,
     val imageRes: Int,
     val name: String,
     val description: String,
     val link: String,
-    val videoLinks: List<String>, )
+    val videoLinks: List<String>,
+)
 
 val unknownSampleData = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.shaders,
     name = "Unknown",
     description = "Unknown",
     link = "Unknown",
@@ -18,7 +20,7 @@ val unknownSampleData = SampleDataHolder(
 )
 
 private val media3DataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.media3,
     name = "Media3Player",
     description = "Media3 api implementation",
     link = "https://github.com/cora32/Media3Player",
@@ -28,7 +30,7 @@ private val media3DataHolder = SampleDataHolder(
 )
 
 private val shadersDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.shaders,
     name = "ShaderToy",
     description = "AGSL for static image + GLSL with camera feed (Camera2 api)",
     link = "https://github.com/cora32/Shaders",
@@ -38,7 +40,7 @@ private val shadersDataHolder = SampleDataHolder(
 )
 
 private val motionDetectorDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.motion,
     name = "MotionDetector",
     description = "Motion detector on CameraX + NDK",
     link = "https://github.com/cora32/MotionDetector",
@@ -48,7 +50,7 @@ private val motionDetectorDataHolder = SampleDataHolder(
 )
 
 private val hexDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.hex,
     name = "Hex",
     description = "Desktop string encoder/decoder on Flutter",
     link = "https://github.com/cora32/hex",
@@ -58,7 +60,7 @@ private val hexDataHolder = SampleDataHolder(
 )
 
 private val gitObserverClientDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.git,
     name = "GitObserverClient",
     description = "Github viewer on Jetpack Compose",
     link = "https://github.com/cora32/GitObserverClient",
@@ -68,7 +70,7 @@ private val gitObserverClientDataHolder = SampleDataHolder(
 )
 
 private val cryptoDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.ccc,
     name = "Crypto",
     description = "Crypto trading game with Binance feed",
     link = "",
@@ -78,7 +80,7 @@ private val cryptoDataHolder = SampleDataHolder(
 )
 
 private val avlixAvDataHolder = SampleDataHolder(
-    imageRes = 0,
+    imageRes = R.drawable.avlix,
     name = "Avlix Antivirus",
     description = "Antivirus for Android with password-leaks check screen",
     link = "",

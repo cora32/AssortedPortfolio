@@ -23,7 +23,7 @@ data class SampleEntity(
 @Database(
     entities = [
         SampleEntity::class,
-    ], version = 0
+    ], version = 1
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

@@ -10,10 +10,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import kotlin.getValue
 
 open class BaseModel(application: Application): AndroidViewModel(application = application), KoinComponent {
     protected val navManager: NavManager by inject()
     protected val ioDispatcher: CoroutineDispatcher = get(named(IODispatcher))
     protected val defaultDispatcher: CoroutineDispatcher = get(named(DefaultDispatcher))
+
+    fun onBack() {
+        navManager.onBack()
+    }
 }

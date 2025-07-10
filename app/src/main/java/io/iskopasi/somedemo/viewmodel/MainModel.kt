@@ -25,7 +25,7 @@ class MainModel(
 ) : BaseModel(application = application) {
     private val _data = repo.dataFlow.map { list -> list.map { it.toSampleDataHolder() } }
         .stateIn(scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(0),
             initialValue = emptyList()
         )
     private val _state = MutableStateFlow(LoadingState.Idle)
@@ -50,7 +50,8 @@ class MainModel(
     }
 }
 
-private fun SampleEntity.toSampleDataHolder() = SampleDataHolder (
+fun SampleEntity.toSampleDataHolder() = SampleDataHolder(
+    uid = this.uid,
     imageRes = this.imageRes,
     name = this.name,
     description = this.description,

@@ -1,9 +1,9 @@
 package io.iskopasi.somedemo
 
-import androidx.room.Dao
 import androidx.room.Room
-import com.google.gson.Gson
+import io.iskopasi.somedemo.managers.DataSource
 import io.iskopasi.somedemo.managers.NavManager
+import io.iskopasi.somedemo.managers.PlayerManager
 import io.iskopasi.somedemo.managers.RestApi
 import io.iskopasi.somedemo.managers.room.AppDatabase
 import io.iskopasi.somedemo.managers.room.SampleDao
@@ -37,6 +37,23 @@ val managerModules = module {
     }
 
     single {
+        PlayerManager(
+            application = androidApplication()
+        )
+    }
+
+    single {
+        DataSource(
+            dao = get(),
+            restApi = get(),
+        )
+    }
+
+    single {
+        NavManager()
+    }
+
+    single {
         Room.databaseBuilder(
             androidApplication(),
             AppDatabase::class.java,
@@ -60,6 +77,10 @@ val vmModule = module {
             )
     }
     viewModel {
-        DetailsModel(application = androidApplication(),)
+        DetailsModel(
+            application = androidApplication(),
+            dataSource = get(),
+            playerManager = get()
+        )
     }
 }
